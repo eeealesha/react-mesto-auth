@@ -1,0 +1,16 @@
+.button_type_login{
+    outline: none;
+    margin-top: 216px;
+    cursor: pointer;
+    height: 50px;
+    width: 100%;
+    border: none;
+    font-size: 18px;
+    line-height: 22px;
+    background: white;
+    padding: 0;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-align: center;
+}

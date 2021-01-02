@@ -29,6 +29,7 @@
 @import url("../blocks/button/_hidden/button_hidden.css");
 @import url("../blocks/button/_type/botton_type_confirm.css");
 @import url("../blocks/button/_type/botton_type_avatar.css");
+@import url("../blocks/button/_type/button_type_login.css");
 
 @import url("../blocks/photo-grid/photo-grid.css");
 @import url("../blocks/photo-grid/__list/photo-grid__list.css");
@@ -59,3 +60,16 @@
 @import url("../blocks/form/__item/_error/form__item_error.css");
 @import url("../blocks/form/__error-text/form__error-text.css");
 @import url("../blocks/form/__error-text/_active/form__error-text_active.css");
+
+@import url("../blocks/login/login.css");
+@import url("../blocks/login/__register/login__register.css");
+@import url("../blocks/login/__title/login__title.css");
+@import url("../blocks/login/__form/login__form.css");
+@import url("../blocks/login/__item/login__item.css");
+@import url("../blocks/login/__field/login__field.css");
+@import url("../blocks/login/__label/login__label.css");
+@import url("../blocks/login/__wrapper/login__wrapper.css");
+@import url("../blocks/login/__link/login__link.css");
+@import url("../blocks/login/__link/_header/login__link_header.css");
+@import url("../blocks/login/__text/login__text.css");
+

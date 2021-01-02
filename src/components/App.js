@@ -9,6 +9,9 @@ import {EditProfilePopup} from './EditProfilePopup';
 import {EditAvatarPopup} from './EditAvatarPopup';
 import {AddPlacePopup} from "./AddPlacePopup";
 import {Switch, Route, useHistory} from 'react-router-dom';
+import {ProtectedRoute} from "./ProtectedRoute";
+import {Register} from './Register';
+import {Login} from "./Login";
 //Импортируйте этот объект в App и используйте его провайдер
 
 import {CurrentUserContext} from '../contex/CurrentUserContext';
@@ -16,7 +19,7 @@ import {CurrentUserContext} from '../contex/CurrentUserContext';
 
 function App() {
     // Создаем стейт-переменную логина
-    const [isLogedIn, setIsLogedIn] = React.useState(false);
+    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
     // Создаем стейт-переменные попапов
     const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false); // true или false
     const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false); // true или false
@@ -104,7 +107,7 @@ function App() {
     function handleUpdateUser({name, about}) {
         api.sendUserInfo(name, about)
             .then((res) => {
-                setCurrentUser(res)
+                 (res)
                 closeAllPopups()
             })
             .catch((err) => console.log(err))
@@ -141,6 +144,7 @@ function App() {
     return (
         //«оберните» в него всё текущее содержимое корневого компонента
         //В качестве значения контекста для провайдера используйте currentUser
+        <>
         <Switch>
             <Route path="/sign-up">
                 <Register />
@@ -148,28 +152,31 @@ function App() {
             <Route path="/sign-in">
                 <Login />
             </Route>
-        <CurrentUserContext.Provider value={currentUser}>
-            <div>
-                <div className="page">
-                    <Header/>
-                    <Main cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete}
-                          onEditAvatar={handleEditAvatar} onAddPlace={handleAddPlaceClick}
-                          onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}/>
-                    <Footer/>
-                    <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen}
-                                      onClose={closeAllPopups}/>
-                    <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen}
-                                     onClose={closeAllPopups}/>
-                    <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen={isAddPlacePopupOpen}
-                                   onClose={closeAllPopups}/>
-                    <PopupWithForm onClose={closeAllPopups} title='Вы уверены?' name='confirm' buttonText='Да'/>
-                    <ImagePopup onClose={closeAllPopups} isOpen={isImagePopupOpen} card={selectedCard}/>
-                </div>
+            <ProtectedRoute path='/' loggedIn={isLoggedIn} component={
+                <CurrentUserContext.Provider value={currentUser}>
+                    <div>
+                        <div className="page">
+                            <Header/>
+                            <Main cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete}
+                                  onEditAvatar={handleEditAvatar} onAddPlace={handleAddPlaceClick}
+                                  onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}/>
+                            <Footer/>
+                            <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen}
+                                              onClose={closeAllPopups}/>
+                            <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen}
+                                             onClose={closeAllPopups}/>
+                            <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen={isAddPlacePopupOpen}
+                                           onClose={closeAllPopups}/>
+                            <PopupWithForm onClose={closeAllPopups} title='Вы уверены?' name='confirm' buttonText='Да'/>
+                            <ImagePopup onClose={closeAllPopups} isOpen={isImagePopupOpen} card={selectedCard}/>
+                        </div>
 
 
-            </div>
-        </CurrentUserContext.Provider>
+                    </div>
+                </CurrentUserContext.Provider>
+            } />
         </Switch>
+        </>
     );
 }
 
