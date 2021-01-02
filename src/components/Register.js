@@ -1,18 +1,17 @@
 import React from "react";
-import {CurrentUserContext} from '../contex/CurrentUserContext';
 import Footer from "./Footer";
 import Header from "./Header";
 import {Link, useHistory} from 'react-router-dom';
 import * as auth from '../utils/auth';
+import {InfoTooltip} from "./InfoTooltip";
 
-export function Register(props) {
-    // Подписка на контекст
-    // const currentUser = React.useContext(CurrentUserContext);
-    // добавьте стейт-переменные name и description и привяжите их к полям ввода, сделав их управляемыми
+export function Register() {
     const history = useHistory();
     const [email, setEmail]= React.useState("");
     const [password, setPassword]= React.useState("");
     const [message, setMessage]= React.useState("");
+    const [isToolTipOpen, setToolTipOpen] = React.useState(false);
+    const [error, setError] = React.useState(false);
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
     }
@@ -20,17 +19,31 @@ export function Register(props) {
         setPassword(e.target.value);
     }
     function handleSubmit(e) {
+        setError(false);
        e.preventDefault();
+        if(!email || !password){
+            console.log('Введите email и пароль');
+        }
        auth.register(email,password).then((res) => {
-           if (res.statusCode !== 400) {
-               setMessage('');
-               history.push('/sign-in');
+           console.log(email)
+           console.log(password)
+           console.log(res)
+           if (res === 400) {
+               setToolTipOpen(true);
+               setMessage('Вы успешно зарегистрировались!');
            }
            else {
-               setMessage('Что-то пошло не так')
+               setError(true);
+               setMessage('Что-то пошло не так!\n' +
+                   'Попробуйте ещё раз.')
+               setToolTipOpen(true);
            }
         })
 
+    }
+
+    const onClose = () =>{
+        setToolTipOpen(false);
     }
 
     return (
@@ -85,6 +98,7 @@ export function Register(props) {
             </main>
             <Footer/>
         </div>
+           <InfoTooltip onClose={onClose} isOpen={isToolTipOpen} error={error} message={message}></InfoTooltip>
        </>
     )
 

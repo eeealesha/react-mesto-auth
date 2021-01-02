@@ -1,4 +1,7 @@
 .popup__container {
+  display: flex;
+  justify-items: center;
+  flex-direction: column;
   width: 430px;
   background-color: white;
   margin: 0 auto;

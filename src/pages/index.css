@@ -73,3 +73,11 @@
 @import url("../blocks/login/__link/_header/login__link_header.css");
 @import url("../blocks/login/__text/login__text.css");
 
+@import url("../blocks/icon/icon.css");
+@import url("../blocks/icon/__cross/icon__cross.css");
+@import url("../blocks/icon/__tick/icon__tick.css");
+
+@import url("../blocks/infotooltip/__title/infotooltip__title.css");
+
+
+

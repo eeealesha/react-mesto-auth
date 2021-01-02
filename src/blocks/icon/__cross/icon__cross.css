@@ -1,0 +1,6 @@
+.icon__cross {
+    object-fit: contain;
+    margin: 60px auto 32px;
+    max-width: 120px;
+    max-height: 120px;
+}

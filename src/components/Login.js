@@ -4,20 +4,18 @@ import Footer from "./Footer";
 import Header from "./Header";
 import {Link, useHistory} from 'react-router-dom';
 import * as auth from '../utils/auth';
-import InfoTooltip from './InfoTooltip';
+import {InfoTooltip} from './InfoTooltip';
 
 export function Login(props) {
 
     const history = useHistory();
+
     const [email, setEmail]= React.useState("");
     const [password, setPassword]= React.useState("");
-    const [message, setMessage]= React.useState("");
-    const [error, setError] = React.useState(false);
 
     const resetForm = () => {
         setEmail('')
         setPassword('')
-        setMessage('')
     }
 
     const handleEmailChange = (e) => {
@@ -27,17 +25,14 @@ export function Login(props) {
         setPassword(e.target.value);
     }
     const handleSubmit = (e) => {
-        setError(false);
         e.preventDefault();
         if(!email || !password){
-            setMessage('Введите email и пароль');
-            return setError(true);
+            console.log('Введите email и пароль');
         }
         auth.authorize(email, password)
             .then((data)=>{
                 if (data === undefined) {
-                    setMessage('Нет такого пользователя');
-                    return setError(true);
+                    console.log('Нет такого пользователя');
                 }
                 if (data.token) {
                     history.push('/');
