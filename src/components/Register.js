@@ -1,12 +1,11 @@
 import React from "react";
 import Footer from "./Footer";
 import Header from "./Header";
-import {Link, useHistory} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import * as auth from '../utils/auth';
 import {InfoTooltip} from "./InfoTooltip";
 
 export function Register() {
-    const history = useHistory();
     const [email, setEmail]= React.useState("");
     const [password, setPassword]= React.useState("");
     const [message, setMessage]= React.useState("");
@@ -25,21 +24,21 @@ export function Register() {
             console.log('Введите email и пароль');
         }
        auth.register(email,password).then((res) => {
-           console.log(email)
-           console.log(password)
-           console.log(res)
-           if (res === 400) {
-               setToolTipOpen(true);
+           if (!res.message){
                setMessage('Вы успешно зарегистрировались!');
            }
            else {
                setError(true);
-               setMessage('Что-то пошло не так!\n' +
-                   'Попробуйте ещё раз.')
-               setToolTipOpen(true);
+               setMessage('Что-то пошло не так');
            }
         })
-
+           .catch((err) => {
+               setError(true);
+               setMessage('Что-то пошло не так');
+               console.log(err)
+               return message
+           })
+        setToolTipOpen(true);
     }
 
     const onClose = () =>{
