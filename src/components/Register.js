@@ -2,37 +2,36 @@ import React from "react";
 import {CurrentUserContext} from '../contex/CurrentUserContext';
 import Footer from "./Footer";
 import Header from "./Header";
-import {Link} from 'react-router-dom';
-
+import {Link, useHistory} from 'react-router-dom';
+import * as auth from '../utils/auth';
 
 export function Register(props) {
     // Подписка на контекст
     // const currentUser = React.useContext(CurrentUserContext);
     // добавьте стейт-переменные name и description и привяжите их к полям ввода, сделав их управляемыми
-    const [login, setLogin]= React.useState("");
+    const history = useHistory();
+    const [email, setEmail]= React.useState("");
     const [password, setPassword]= React.useState("");
-    const [isOpen] = React.useState(true)
-    const handleLoginChange = (e) => {
-        setLogin(e.target.value);
+    const [message, setMessage]= React.useState("");
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
     }
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
     }
     function handleSubmit(e) {
-        // Запрещаем браузеру переходить по адресу формы
-        // e.preventDefault();
-        // // Передаём значения управляемых компонентов во внешний обработчик
-        // props.onUpdateUser({
-        //     name,
-        //     about: description,
-        // });
+       e.preventDefault();
+       auth.register(email,password).then((res) => {
+           if (res.statusCode !== 400) {
+               setMessage('');
+               history.push('/sign-in');
+           }
+           else {
+               setMessage('Что-то пошло не так')
+           }
+        })
+
     }
-    // После загрузки текущего пользователя из API
-    // его данные будут использованы в управляемых компонентах.
-    // React.useEffect(() => {
-    //     setName(currentUser.name);
-    //     setDescription(currentUser.about);
-    // }, [currentUser]);
 
     return (
        <>
@@ -42,7 +41,7 @@ export function Register(props) {
             </Header>
             <main className='login'>
             <section className="login__register">
-                <form onSubmit={props.onSubmit} className="login__form" name="register" noValidate>
+                <form onSubmit={handleSubmit} className="login__form" name="register" noValidate>
                     <h2 className="login__title">Регистрация</h2>
                     <fieldset className="login__field">
                         <label className="login__label">
@@ -50,13 +49,13 @@ export function Register(props) {
                                 placeholder="e-mail"
                                 type="text"
                                 className="login__item login__item_el_name"
-                                id="e-mail"
-                                name="e-mail"
+                                id="email"
+                                name="email"
                                 required
                                 minLength="2"
                                 maxLength="40"
-                                value={login || ''}
-                                onChange={handleLoginChange}
+                                value={email || ''}
+                                onChange={handleEmailChange}
                             />
                         </label>
                         <label className="login__field">
