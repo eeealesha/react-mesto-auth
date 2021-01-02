@@ -20,6 +20,7 @@ export function Register(props) {
         setPassword(e.target.value);
     }
     function handleSubmit(e) {
+        props.handleInfoToolTip();
        e.preventDefault();
        auth.register(email,password).then((res) => {
            if (res.statusCode !== 400) {
@@ -46,7 +47,7 @@ export function Register(props) {
                     <fieldset className="login__field">
                         <label className="login__label">
                             <input
-                                placeholder="e-mail"
+                                placeholder="Email"
                                 type="text"
                                 className="login__item login__item_el_name"
                                 id="email"

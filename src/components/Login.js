@@ -4,13 +4,12 @@ import Footer from "./Footer";
 import Header from "./Header";
 import {Link, useHistory} from 'react-router-dom';
 import * as auth from '../utils/auth';
-
+import InfoTooltip from './InfoTooltip';
 
 export function Login(props) {
     // Подписка на контекст
     const currentUser = React.useContext(CurrentUserContext);
     const history = useHistory();
-    const [login, setLogin]= React.useState("");
     const [email, setEmail]= React.useState("");
     const [password, setPassword]= React.useState("");
     const [message, setMessage]= React.useState("");
@@ -28,6 +27,7 @@ export function Login(props) {
         setPassword(e.target.value);
     }
     const handleSubmit = (e) => {
+        props.handleInfoToolTip();
         e.preventDefault();
         if(!email || !password){
             return

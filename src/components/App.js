@@ -8,13 +8,16 @@ import {api} from "../utils/api";
 import {EditProfilePopup} from './EditProfilePopup';
 import {EditAvatarPopup} from './EditAvatarPopup';
 import {AddPlacePopup} from "./AddPlacePopup";
-import {Switch, Route, useHistory} from 'react-router-dom';
+import {Switch, Route, useHistory, Link} from 'react-router-dom';
 import ProtectedRoute from "./ProtectedRoute";
 import {Register} from './Register';
 import {Login} from "./Login";
+import * as auth from '../utils/auth';
+import {InfoTooltip} from './InfoTooltip';
 //Импортируйте этот объект в App и используйте его провайдер
 
 import {CurrentUserContext} from '../contex/CurrentUserContext';
+
 
 
 function App() {
@@ -25,13 +28,16 @@ function App() {
     const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false); // true или false
     const [isEditAvatarPopupOpen, setAvatarPopupOpen] = React.useState(false); // true или false
     const [isImagePopupOpen, setImagePopupOpen] = React.useState(false); // true или false
+    const [isInfoToolTipOpen, setInfoToolTipOpen] = React.useState(false); // true или false
     // Создаем стейт-переменную выбранной карточки
     const [selectedCard, setSelectedCard] = React.useState(null);
     // Создайте стейт currentUser в корневом компоненте
+    const [currentEmail, setCurrentEmail] = React.useState({});
     const [currentUser, setCurrentUser] = React.useState({});
     // Создаем стейт-переменные для массива карточек
     const [cards, setCards] = React.useState([]);
 
+    const history = useHistory();
 
     React.useEffect(() => {
         Promise.all([
@@ -85,6 +91,10 @@ function App() {
                 console.log(err);
             });
 
+    }
+
+    function handleInfoToolTip() {
+        setInfoToolTipOpen(true);
     }
 
     function handleCardClick(card) {
@@ -146,9 +156,30 @@ function App() {
     }
 
     function handleSignOut(){
-        
-        setIsLoggedIn(false)
+        localStorage.removeItem('token')
+        history.push('/sign-in');
+        setIsLoggedIn(false);
     }
+
+    const tokenCheck = () => {
+        if(localStorage.getItem('token')) {
+            let token = localStorage.getItem('token');
+            auth.getContent(token).then((res)=>{
+                if(res){
+                    console.log(res.data);
+                    setIsLoggedIn(true);
+                    setCurrentEmail(res.data.email);
+                }
+            })
+        }
+    }
+
+    React.useEffect(()=>{
+        tokenCheck();
+        if (isLoggedIn){
+            history.push('/');
+        }
+    },[isLoggedIn])
 
     return (
         //«оберните» в него всё текущее содержимое корневого компонента
@@ -156,17 +187,26 @@ function App() {
         <>
         <Switch>
             <Route path="/sign-up">
-                <Register />
+                <Register handleInfoToolTip={handleInfoToolTip} />
+                <InfoTooltip onClose={closeAllPopups} isOpen={isInfoToolTipOpen} isLoggedIn={isLoggedIn}></InfoTooltip>
             </Route>
             <Route path="/sign-in">
-                <Login handleLogin={handleLogin}/>
+                <Login handleInfoToolTip={handleInfoToolTip} handleLogin={handleLogin}/>
+                <InfoTooltip onClose={closeAllPopups} isOpen={isInfoToolTipOpen} isLoggedIn={isLoggedIn}></InfoTooltip>
             </Route>
             <ProtectedRoute path='/'
                             loggedIn={isLoggedIn}
                             Component={
                                 (<CurrentUserContext.Provider value={currentUser}>
                                 <div className="page">
-                                <Header/>
+                                    <Header>
+                                        <div className="login__wrapper">
+                                            <p className="login__text">
+                                                {currentEmail}
+                                                <a onClick={handleSignOut} type="button" className="login__link login__link_header"> Выйти</a>
+                                            </p>
+                                        </div>
+                                    </Header>
                                 <Main cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete}
                                 onEditAvatar={handleEditAvatar} onAddPlace={handleAddPlaceClick}
                                 onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}/>
@@ -179,6 +219,7 @@ function App() {
                                 onClose={closeAllPopups}/>
                                 <PopupWithForm onClose={closeAllPopups} title='Вы уверены?' name='confirm' buttonText='Да'/>
                                 <ImagePopup onClose={closeAllPopups} isOpen={isImagePopupOpen} card={selectedCard}/>
+                                <InfoTooltip onClose={closeAllPopups} isOpen={isInfoToolTipOpen} isLoggedIn={isLoggedIn}></InfoTooltip>
                                 </div>
                                 </CurrentUserContext.Provider>)
 
