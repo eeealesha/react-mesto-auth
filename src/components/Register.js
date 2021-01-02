@@ -20,7 +20,6 @@ export function Register(props) {
         setPassword(e.target.value);
     }
     function handleSubmit(e) {
-        props.handleInfoToolTip();
        e.preventDefault();
        auth.register(email,password).then((res) => {
            if (res.statusCode !== 400) {

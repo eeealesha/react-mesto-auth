@@ -7,12 +7,12 @@ import * as auth from '../utils/auth';
 import InfoTooltip from './InfoTooltip';
 
 export function Login(props) {
-    // Подписка на контекст
-    const currentUser = React.useContext(CurrentUserContext);
+
     const history = useHistory();
     const [email, setEmail]= React.useState("");
     const [password, setPassword]= React.useState("");
     const [message, setMessage]= React.useState("");
+    const [error, setError] = React.useState(false);
 
     const resetForm = () => {
         setEmail('')
@@ -27,21 +27,22 @@ export function Login(props) {
         setPassword(e.target.value);
     }
     const handleSubmit = (e) => {
-        props.handleInfoToolTip();
+        setError(false);
         e.preventDefault();
         if(!email || !password){
-            return
+            setMessage('Введите email и пароль');
+            return setError(true);
         }
         auth.authorize(email, password)
             .then((data)=>{
-                console.log(data);
                 if (data === undefined) {
-                    console.log("Нет такого пользователя")
+                    setMessage('Нет такого пользователя');
+                    return setError(true);
                 }
                 if (data.token) {
+                    history.push('/');
                     resetForm();
                     props.handleLogin();
-                    history.push('/');
                 }
             })
             .catch(err=>console.log(err));
