@@ -1,14 +1,8 @@
 import React from "react";
-import {CurrentUserContext} from '../contex/CurrentUserContext';
 import Footer from "./Footer";
 import Header from "./Header";
-import {Link, useHistory} from 'react-router-dom';
-import * as auth from '../utils/auth';
-import {InfoTooltip} from './InfoTooltip';
 
 export function Login(props) {
-
-    const history = useHistory();
 
     const [email, setEmail]= React.useState("");
     const [password, setPassword]= React.useState("");
@@ -24,30 +18,17 @@ export function Login(props) {
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
     }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(!email || !password){
-            console.log('Введите email и пароль');
-        }
-        auth.authorize(email, password)
-            .then((data)=>{
-                if (data === undefined) {
-                    console.log('Нет такого пользователя');
-                }
-                if (data.token) {
-                    history.push('/');
-                    resetForm();
-                    props.handleLogin();
-                }
-            })
-            .catch(err=>console.log(err));
+        props.handleLogin(email, password);
+        resetForm();
     }
 
     return (
         <>
             <div className='page'>
-                <Header>
-                    <Link to="sign-up" className="login__link login__link_header">Регистрация</Link>
+                <Header name={"Регистрация"} page={'/sign-up'}>
                 </Header>
                 <main className='login'>
                     <section className="login__register">

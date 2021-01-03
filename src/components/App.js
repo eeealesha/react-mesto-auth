@@ -18,7 +18,6 @@ import * as auth from '../utils/auth';
 import {CurrentUserContext} from '../contex/CurrentUserContext';
 
 
-
 function App() {
     // Создаем стейт-переменную логина
     const [isLoggedIn, setIsLoggedIn] = React.useState(false);
@@ -145,77 +144,90 @@ function App() {
         setImagePopupOpen(false);
     }
 
-    function handleLogin() {
-        setIsLoggedIn(true);
-    }
-
-    function handleSignOut(){
+    function handleSignOut() {
         localStorage.removeItem('token')
         history.push('/sign-in');
         setIsLoggedIn(false);
     }
 
-    const tokenCheck = () => {
-        if(localStorage.getItem('token')) {
-            let token = localStorage.getItem('token');
-            auth.getContent(token).then((res)=>{
-                if(res){
-                    console.log(res.data);
+    const handleLogin = (email, password) => {
+        if (!email || !password) {
+            console.log('Введите email и пароль');
+        }
+        auth.authorize(email, password)
+            .then((data) => {
+                if (data === undefined) {
+                    console.log('Нет такого пользователя');
+                }
+                if (data.token) {
                     setIsLoggedIn(true);
-                    setCurrentEmail(res.data.email);
+                    history.push('/');
                 }
             })
+            .catch(err => console.log(err));
+    }
+
+    const tokenCheck = () => {
+        if (localStorage.getItem('token')) {
+            const token = localStorage.getItem('token');
+            auth.getContent(token).then((res) => {
+                if (res) {
+                    setIsLoggedIn(true);
+
+                    setCurrentEmail(res.data.email);
+                    history.push('/')
+                } else {
+                    localStorage.removeItem('jwt');
+                }
+            })
+                .catch((err) => console.log(err))
         }
     }
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
         tokenCheck();
-        if (isLoggedIn){
-            history.push('/');
-        }
-    },[isLoggedIn, history])
+    }, [])
 
     return (
-        //«оберните» в него всё текущее содержимое корневого компонента
-        //В качестве значения контекста для провайдера используйте currentUser
         <>
-        <Switch>
-            <Route path="/sign-up">
-                <Register />
-            </Route>
-            <Route path="/sign-in">
-                <Login handleLogin={handleLogin}/>
-            </Route>
-            <ProtectedRoute path='/'
-                            loggedIn={isLoggedIn}
-                            Component={
-                                (<CurrentUserContext.Provider value={currentUser}>
-                                <div className="page">
-                                    <Header>
-                                        <div className="login__wrapper">
-                                            <p className="login__text">
-                                                {currentEmail}
-                                                <a href="#" onClick={handleSignOut} type="button" className="login__link login__link_header"> Выйти</a>
-                                            </p>
+            <Switch>
+                <Route path="/sign-up">
+                    <Register/>
+                </Route>
+                <Route path="/sign-in">
+                    <Login handleLogin={handleLogin}/>
+                </Route>
+                <ProtectedRoute path='/'
+                                loggedIn={isLoggedIn}
+                                Component={
+                                    <CurrentUserContext.Provider value={currentUser}>
+                                        <div className="page">
+                                            <Header email={currentEmail} onClick={handleSignOut} name={"Выйти"}
+                                                    page={'/sign-in'}>
+                                            </Header>
+                                            <Main cards={cards} onCardLike={handleCardLike}
+                                                  onCardDelete={handleCardDelete}
+                                                  onEditAvatar={handleEditAvatar} onAddPlace={handleAddPlaceClick}
+                                                  onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}/>
+                                            <Footer/>
+                                            <EditProfilePopup onUpdateUser={handleUpdateUser}
+                                                              isOpen={isEditProfilePopupOpen}
+                                                              onClose={closeAllPopups}/>
+                                            <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar}
+                                                             isOpen={isEditAvatarPopupOpen}
+                                                             onClose={closeAllPopups}/>
+                                            <AddPlacePopup onAddPlace={handleAddPlaceSubmit}
+                                                           isOpen={isAddPlacePopupOpen}
+                                                           onClose={closeAllPopups}/>
+                                            <PopupWithForm onClose={closeAllPopups} title='Вы уверены?' name='confirm'
+                                                           buttonText='Да'/>
+                                            <ImagePopup onClose={closeAllPopups} isOpen={isImagePopupOpen}
+                                                        card={selectedCard}/>
                                         </div>
-                                    </Header>
-                                <Main cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete}
-                                onEditAvatar={handleEditAvatar} onAddPlace={handleAddPlaceClick}
-                                onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}/>
-                                <Footer/>
-                                <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen}
-                                onClose={closeAllPopups}/>
-                                <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen}
-                                onClose={closeAllPopups}/>
-                                <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen={isAddPlacePopupOpen}
-                                onClose={closeAllPopups}/>
-                                <PopupWithForm onClose={closeAllPopups} title='Вы уверены?' name='confirm' buttonText='Да'/>
-                                <ImagePopup onClose={closeAllPopups} isOpen={isImagePopupOpen} card={selectedCard}/>
-                                </div>
-                                </CurrentUserContext.Provider>)
+                                    </CurrentUserContext.Provider>
 
-            } />
-        </Switch>
+                                }/>
+            </Switch>
         </>
     );
 }

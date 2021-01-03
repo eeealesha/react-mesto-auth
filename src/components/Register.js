@@ -11,6 +11,12 @@ export function Register() {
     const [message, setMessage]= React.useState("");
     const [isToolTipOpen, setToolTipOpen] = React.useState(false);
     const [error, setError] = React.useState(false);
+
+    const resetForm = () => {
+        setEmail('')
+        setPassword('')
+    }
+
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
     }
@@ -24,15 +30,19 @@ export function Register() {
             console.log('Введите email и пароль');
         }
        auth.register(email,password).then((res) => {
-           if (!res.message){
+           console.log(res);
+           if (!res.message && !res.error){
+               resetForm();
                setMessage('Вы успешно зарегистрировались!');
            }
            else {
+               resetForm();
                setError(true);
-               setMessage('Что-то пошло не так');
+               setMessage(res.message || res.error);
            }
         })
            .catch((err) => {
+               resetForm();
                setError(true);
                setMessage('Что-то пошло не так');
                console.log(err)
@@ -48,8 +58,7 @@ export function Register() {
     return (
        <>
         <div className='page'>
-            <Header>
-                <Link to="sign-in" className="login__link login__link_header">Войти</Link>
+            <Header name={"Войти"} page={'/sign-in'}>
             </Header>
             <main className='login'>
             <section className="login__register">
