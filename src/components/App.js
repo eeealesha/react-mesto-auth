@@ -8,7 +8,7 @@ import { api } from "../utils/api";
 import { EditProfilePopup } from "./EditProfilePopup";
 import { EditAvatarPopup } from "./EditAvatarPopup";
 import { AddPlacePopup } from "./AddPlacePopup";
-import { Switch, Route, useHistory } from "react-router-dom";
+import { Switch, Route, useHistory, Redirect } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import { Register } from "./Register";
 import { Login } from "./Login";
@@ -227,12 +227,6 @@ function App() {
     <>
       <CurrentUserContext.Provider value={currentUser}>
         <div className="page">
-          <Header
-            email={currentEmail}
-            onClick={handleSignOut}
-            name="Выйти"
-            page="/sign-in"
-          ></Header>
           <Switch>
             <Route path="/sign-up">
               <Register
@@ -251,6 +245,12 @@ function App() {
               loggedIn={isLoggedIn}
               Component={
                 <>
+                  <Header
+                    email={currentEmail}
+                    onClick={handleSignOut}
+                    name={"Выйти"}
+                    page="/sign-in"
+                  ></Header>
                   <Main
                     cards={cards}
                     onCardLike={handleCardLike}
@@ -263,6 +263,9 @@ function App() {
                 </>
               }
             />
+            <Route exact path="/">
+              {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+            </Route>
           </Switch>
           <Footer />
           <EditProfilePopup
