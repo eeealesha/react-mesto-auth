@@ -225,7 +225,6 @@ function App() {
                                                         card={selectedCard}/>
                                         </div>
                                     </CurrentUserContext.Provider>
-
                                 }/>
             </Switch>
         </>
