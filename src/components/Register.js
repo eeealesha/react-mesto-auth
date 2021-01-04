@@ -5,12 +5,9 @@ import { Link } from "react-router-dom";
 import * as auth from "../utils/auth";
 import { InfoTooltip } from "./InfoTooltip";
 
-export function Register() {
+export function Register(props) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [message, setMessage] = React.useState("");
-  const [isToolTipOpen, setToolTipOpen] = React.useState(false);
-  const [error, setError] = React.useState(false);
 
   const resetForm = () => {
     setEmail("");
@@ -24,34 +21,11 @@ export function Register() {
     setPassword(e.target.value);
   };
 
-  function handleSubmit(e) {
-    setError(false);
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      console.log("Введите email и пароль");
-    }
-    auth
-      .register(email, password)
-      .then((res) => {
-        console.log(res);
-        if (!res.message && !res.error) {
-          resetForm();
-          setMessage("Вы успешно зарегистрировались!");
-        } else {
-          resetForm();
-          setError(true);
-          setMessage(res.message || res.error);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setToolTipOpen(true);
+    props.handleRegister(email, password);
+    resetForm();
   }
-
-  const onClose = () => {
-    setToolTipOpen(false);
-  };
 
   return (
     <>
@@ -114,10 +88,10 @@ export function Register() {
         <Footer />
       </div>
       <InfoTooltip
-        onClose={onClose}
-        isOpen={isToolTipOpen}
-        error={error}
-        message={message}
+        onClose={props.onClose}
+        isOpen={props.isToolTipOpen}
+        error={props.error}
+        message={props.message}
       ></InfoTooltip>
     </>
   );
