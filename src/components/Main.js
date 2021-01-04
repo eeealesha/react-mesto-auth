@@ -45,7 +45,7 @@ export default function Main(props) {
           {props.cards.map((card, i) => (
             <Card
               card={card}
-              key={i}
+              key={card._id}
               onClick={props.onCardClick}
               onCardLike={props.onCardLike}
               onCardDelete={props.onCardDelete}

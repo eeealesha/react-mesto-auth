@@ -227,6 +227,12 @@ function App() {
     <>
       <CurrentUserContext.Provider value={currentUser}>
         <div className="page">
+          <Header
+            email={currentEmail}
+            onClick={handleSignOut}
+            name="Выйти"
+            page="/sign-in"
+          ></Header>
           <Switch>
             <Route path="/sign-up">
               <Register
@@ -245,12 +251,6 @@ function App() {
               loggedIn={isLoggedIn}
               Component={
                 <>
-                  <Header
-                    email={currentEmail}
-                    onClick={handleSignOut}
-                    name="Выйти"
-                    page="/sign-in"
-                  ></Header>
                   <Main
                     cards={cards}
                     onCardLike={handleCardLike}
