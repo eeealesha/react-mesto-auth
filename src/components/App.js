@@ -248,7 +248,7 @@ function App() {
                   <Header
                     email={currentEmail}
                     onClick={handleSignOut}
-                    name={"Выйти"}
+                    name="Выйти"
                     page="/sign-in"
                   ></Header>
                   <Main
