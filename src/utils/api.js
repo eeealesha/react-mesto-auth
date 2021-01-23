@@ -1,4 +1,6 @@
-class Api {
+
+
+export class Api {
   constructor(options) {
     this.baseUrl = options.baseUrl;
     this.headers = options.headers;
@@ -46,6 +48,7 @@ class Api {
   }
 
   postNewCard(cardName, cardLink) {
+    console.log(this.headers)
     return fetch(`${this.baseUrl}/cards`, {
       method: "POST",
       headers: this.headers,
@@ -94,10 +97,3 @@ class Api {
 }
 
 // Создаем экземпляр класса АПИ с нашими настройками
-export const api = new Api({
-  baseUrl: "https://mesto.nomoreparties.co/v1/cohort-16",
-  headers: {
-    authorization: "2cbbf139-db5f-40de-8d4c-6c77fbe4b91c",
-    "Content-Type": "application/json",
-  },
-});

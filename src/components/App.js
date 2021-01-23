@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import { PopupWithForm } from "./PopupWithForm";
 import { ImagePopup } from "./ImagePopup";
 import React from "react";
-import { api } from "../utils/api";
+import {Api} from "../utils/api";
 import { EditProfilePopup } from "./EditProfilePopup";
 import { EditAvatarPopup } from "./EditAvatarPopup";
 import { AddPlacePopup } from "./AddPlacePopup";
@@ -13,6 +13,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import { Register } from "./Register";
 import { Login } from "./Login";
 import * as auth from "../utils/auth";
+
 //Импортируйте этот объект в App и используйте его провайдер
 
 import { CurrentUserContext } from "../contex/CurrentUserContext";
@@ -41,23 +42,36 @@ function App() {
 
   const history = useHistory();
 
-  React.useEffect(() => {
+  const api = new Api({
+    baseUrl: "http://api.eeealesha.students.nomoredomains.icu",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem("token")}`
+    },
+  });
+
+  function updateInfo() {
     Promise.all([
       //в Promise.all передаем массив промисов которые нужно выполнить
       api.getInitialCards(),
       api.getUserInfo(),
     ])
-      .then((values) => {
-        //попадаем сюда когда оба промиса будут выполнены
-        const [initialCards, userData] = values;
-        setCards(initialCards);
-        setCurrentUser(userData);
-        // у нас есть все нужные данные, отрисовываем страницу
-      })
-      .catch((err) => {
-        //попадаем сюда если один из промисов завершаться ошибкой
-        console.log(err);
-      });
+    .then((values) => {
+      //попадаем сюда когда оба промиса будут выполнены
+      const [initialCards, userData] = values;
+      setCurrentUser(userData);
+      setCards(initialCards);
+      // у нас есть все нужные данные, отрисовываем страницу
+    })
+    .catch((err) => {
+      //попадаем сюда если один из промисов завершаться ошибкой
+      console.log(err);
+    });
+  }
+
+  React.useEffect(() => {
+    updateInfo()
   }, []);
 
   function handleCardLike(card) {
@@ -82,8 +96,8 @@ function App() {
   function handleCardDelete(card) {
     // Снова проверяем, являемся ли мы владельцем карточки
     const isOwn = card.owner._id === currentUser._id;
-
     // Отправляем запрос в API и получаем обновлённые данные карточки
+    console.log(card._id)
     api
       .deleteCard(card._id, !isOwn)
       .then(() => {
@@ -136,6 +150,7 @@ function App() {
   }
 
   function handleAddPlaceSubmit({ name, link }) {
+    console.log(localStorage)
     api
       .postNewCard(name, link)
       .then((res) => {
@@ -193,26 +208,28 @@ function App() {
           console.log("Нет такого пользователя");
         }
         if (data.token) {
-          tokenCheck();
-          setIsLoggedIn(true);
+          localStorage.setItem("token", data.token)
           history.push("/");
+          setIsLoggedIn(true);
         }
       })
       .catch((err) => console.log(err));
   };
 
   const tokenCheck = () => {
+    console.log(localStorage)
+    const token = localStorage.getItem("token");
     if (localStorage.getItem("token")) {
-      const token = localStorage.getItem("token");
       auth
         .getContent(token)
         .then((res) => {
           if (res) {
+            setCurrentUser(res)
+            setCurrentEmail(res.email);
             setIsLoggedIn(true);
-            setCurrentEmail(res.data.email);
             history.push("/");
           } else {
-            localStorage.removeItem("jwt");
+            localStorage.removeItem("token");
           }
         })
         .catch((err) => console.log(err));
@@ -221,7 +238,7 @@ function App() {
 
   React.useEffect(() => {
     tokenCheck();
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <>
