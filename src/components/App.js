@@ -72,7 +72,7 @@ function App() {
 
   React.useEffect(() => {
     updateInfo()
-  }, []);
+  }, [isLoggedIn]);
 
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
@@ -150,7 +150,6 @@ function App() {
   }
 
   function handleAddPlaceSubmit({ name, link }) {
-    console.log(localStorage)
     api
       .postNewCard(name, link)
       .then((res) => {
@@ -183,7 +182,6 @@ function App() {
     auth
       .register(email, password)
       .then((res) => {
-        console.log(res);
         if (!res.message && !res.error) {
           setMessage("Вы успешно зарегистрировались!");
         } else {
@@ -217,7 +215,6 @@ function App() {
   };
 
   const tokenCheck = () => {
-    console.log(localStorage)
     const token = localStorage.getItem("token");
     if (localStorage.getItem("token")) {
       auth
