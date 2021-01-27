@@ -1,35 +1,49 @@
 import {PopupWithForm} from "./PopupWithForm";
 import React from "react";
+import {useState} from "react";
 
 export function EditAvatarPopup(props){
-
-    const avatarRef = React.useRef(0);
+    const [fileInputState, setFileInputState] = useState('');
+    const [previewSource, setPreviewSource] = useState();
 
     function handleSubmit(e) {
         e.preventDefault();
-        props.onUpdateAvatar({
-            avatar: avatarRef.current.value,
-        });
     }
 
-    React.useEffect(() => {
-        avatarRef.current.value = "";
-    }, [props.isOpen]);
+    const handleFileInputChange = (e) => {
+        const file = e.target.files[0];
+        previewFile(file);
+    }
+    const previewFile = (file) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            console.log(typeof(reader.result))
+            setPreviewSource(reader.result);
+        }
+    }
+
+    // React.useEffect(() => {
+    //     setFileInputState("");
+    // }, [props.isOpen]);
 
     return(
         <PopupWithForm onClose={props.onClose} isOpen={props.isOpen} title='Обновить аватар'
                        onSubmit={handleSubmit} name='avatar' buttonText='Сохранить' children={<>
             <label className="form__field">
                 <input
-                    type="url"
+                    type="file"
                     className="form__item form__item_el_link"
                     id="link"
                     name="link"
                     placeholder="https://somewebsite.com/someimage.jpg"
                     required
-                    ref={avatarRef}
+                    onChange={handleFileInputChange}
+                    value={fileInputState}
                 />
-                <div className="form__error-text" id="link-error"></div>
+                <div className="form__error-text" id="link-error">
+                    {previewSource && (<img src={previewSource} alt="avatar" style={{height:"300px"}}/>)}
+                </div>
             </label>
         </>}/>
     )

@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "./Header";
+import {InfoTooltip} from "./InfoTooltip";
 
 export function Login(props) {
   const [email, setEmail] = React.useState("");
@@ -38,8 +39,8 @@ export function Login(props) {
             <fieldset className="login__field">
               <label className="login__label">
                 <input
-                  placeholder="Email"
-                  type="text"
+                  placeholder="Введите Ваш email"
+                  type="email"
                   className="login__item login__item_el_name"
                   id="email"
                   name="email"
@@ -52,8 +53,8 @@ export function Login(props) {
               </label>
               <label className="login__field">
                 <input
-                  placeholder="password"
-                  type="text"
+                  placeholder="Введите Ваш пароль"
+                  type="password"
                   className="login__item login__item_el_job"
                   id="password"
                   name="password"
@@ -69,6 +70,12 @@ export function Login(props) {
           </form>
         </section>
       </main>
+      <InfoTooltip
+        onClose={props.onClose}
+        isOpen={props.isToolTipOpen}
+        error={props.error}
+        message={props.message}
+      ></InfoTooltip>
     </>
   );
 }

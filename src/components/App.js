@@ -43,7 +43,7 @@ function App() {
   const history = useHistory();
 
   const api = new Api({
-    baseUrl: "http://api.eeealesha.students.nomoredomains.icu",
+    baseUrl: "http://localhost:3000",
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -76,8 +76,7 @@ function App() {
 
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-
+    const isLiked = card.likes.some((like) => like === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api
       .changeLikeCardStatus(card._id, !isLiked)
@@ -174,14 +173,18 @@ function App() {
     setIsLoggedIn(false);
   }
 
-  const handleRegister = (email, password) => {
+  const handleRegister = (email, password, name) => {
     setError(false);
     if (!email || !password) {
+      setToolTipOpen(true);
+      setError(true)
       console.log("Введите email и пароль");
     }
-    auth
-      .register(email, password)
+    else {
+      auth
+      .register(email, password, name)
       .then((res) => {
+        setToolTipOpen(true);
         if (!res.message && !res.error) {
           setMessage("Вы успешно зарегистрировались!");
         } else {
@@ -192,18 +195,23 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-    setToolTipOpen(true);
+    }
   };
 
   const handleLogin = (email, password) => {
     if (!email || !password) {
-      console.log("Введите email и пароль");
+      setToolTipOpen(true);
+      setError(true);
+      setMessage("Введите email и пароль");
     }
-    auth
+    else {
+      auth
       .authorize(email, password)
       .then((data) => {
         if (data === undefined) {
-          console.log("Нет такого пользователя");
+          setToolTipOpen(true);
+          setError(true);
+          setMessage("Неправильные email или пароль");
         }
         if (data.token) {
           localStorage.setItem("token", data.token)
@@ -212,6 +220,7 @@ function App() {
         }
       })
       .catch((err) => console.log(err));
+    }
   };
 
   const tokenCheck = () => {
@@ -252,7 +261,11 @@ function App() {
               />
             </Route>
             <Route path="/sign-in">
-              <Login handleLogin={handleLogin} />
+              <Login handleLogin={handleLogin}
+                     error={error}
+                     message={message}
+                     isToolTipOpen={isToolTipOpen}
+                     onClose={closeAllPopups}/>
             </Route>
             <ProtectedRoute
               path="/"
