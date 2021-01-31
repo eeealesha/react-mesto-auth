@@ -50,7 +50,7 @@ export function EditAvatarPopup(props){
                   name="image"
                   onChange={handleFileInputChange}
                   value={fileInputState}
-                  className="form-input"
+                  className="form__item"
                 />
             </label>
             {previewSource && (

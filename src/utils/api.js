@@ -15,6 +15,14 @@ export class Api {
 
   getUserInfo() {
     return fetch(`${this.baseUrl}/users/me`, {
+      method: "GET",
+      headers: this.headers,
+    }).then(this._response);
+  }
+
+  getUsers() {
+    return fetch(`${this.baseUrl}/users`, {
+      method: "GET",
       headers: this.headers,
     }).then(this._response);
   }

@@ -35,7 +35,7 @@ function App() {
 	const [currentUser, setCurrentUser] = React.useState({});
 	// Создаем стейт-переменные для массива карточек
 	const [cards, setCards] = React.useState([]);
-
+	const [likedUsers, setLikedUsers] = React.useState(null);
 	const [message, setMessage] = React.useState("");
 	const [isToolTipOpen, setToolTipOpen] = React.useState(false);
 	const [error, setError] = React.useState(false);
@@ -112,7 +112,19 @@ function App() {
 		});
 	}
 
+	function getUsers() {
+
+	}
+
 	function handleCardClick(card) {
+		api.getUsers()
+		.then((res) => {
+			const intersection = res.filter(element => card.likes.includes(element._id));
+			setLikedUsers(intersection);
+		})
+		.catch((err) => {
+			console.log(err)
+		})
 		setSelectedCard(card);
 		setImagePopupOpen(true);
 	}
@@ -138,10 +150,6 @@ function App() {
 		})
 		.catch((err) => console.log(err));
 	}
-
-	// function handleUploadAvatar(base64EncodedImage){
-	//
-	// }
 
 	function handleUpdateAvatar(base64EncodedImage) {
 		api.uploadImage(base64EncodedImage)
@@ -333,6 +341,7 @@ function App() {
 						onClose={closeAllPopups}
 						isOpen={isImagePopupOpen}
 						card={selectedCard}
+						likedUsers={likedUsers}
 					/>
 				</div>
 			</CurrentUserContext.Provider>

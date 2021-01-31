@@ -78,14 +78,14 @@ export function AddPlacePopup(props) {
 						name="image"
 						onChange={handleFileInputChange}
 						value={fileInputState}
-						className="form-input"
+						className="form__item"
 					/>
 				</label>
 				{previewSource && (
 					<img
 						src={previewSource}
 						alt="chosen"
-						style={{height: '300px'}}
+						style={{height: '300px', width:'300px'}}
 					/>
 				)}
 			</>}/>

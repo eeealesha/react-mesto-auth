@@ -6,3 +6,8 @@
   width: 100%;
 }
 
+@media screen and (max-width: 630px) {
+  .form__item {
+    max-width: 220px;
+  }
+}

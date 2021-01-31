@@ -14,3 +14,9 @@
   margin-top: 30px;
   border: none;
 }
+
+@media screen and (max-width: 630px) {
+  .button_type_submit {
+    max-width: 220px;
+  }
+}
