@@ -14,7 +14,7 @@ export default function Main(props) {
             <img
               className="profile__picture"
               src={currentUser.avatar}
-              alt="Фотография Жака-Ив Кусто"
+              alt="Аватарка пользователя"
             />
             <button
               className="button botton_type_avatar"
@@ -42,7 +42,7 @@ export default function Main(props) {
       </section>
       <section className="photo-grid">
         <ul className="photo-grid__list">
-          {props.cards.map((card, i) => (
+          {props.cards.map((card) => (
             <Card
               card={card}
               key={card._id}

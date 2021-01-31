@@ -48,7 +48,6 @@ export class Api {
   }
 
   postNewCard(cardName, cardLink) {
-    console.log(this.headers)
     return fetch(`${this.baseUrl}/cards`, {
       method: "POST",
       headers: this.headers,
@@ -94,6 +93,18 @@ export class Api {
       }).then(this._response);
     }
   }
+
+  uploadImage(base64EncodedImage) {
+    return fetch(`${this.baseUrl}/api/upload`, {
+      method: "POST",
+      headers: this.headers,
+      body: JSON.stringify({
+        data: base64EncodedImage,
+      })
+    }).then(this._response);
+  }
+
+
 }
 
 // Создаем экземпляр класса АПИ с нашими настройками

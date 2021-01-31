@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:3000';
+export const BASE_URL = 'http://api.eeealesha.students.nomoredomains.icu';
 
 export const register = (email, password, name) => {
     return fetch(`${BASE_URL}/signup`, {
