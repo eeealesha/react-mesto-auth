@@ -2,7 +2,6 @@ import React from "react";
 
 
 export function ImagePopup(props) {
-	console.log(props.likedUsers)
 	return (
 		<div
 			className={`popup popup_type_fig ${props.isOpen ? "popup_opened" : ""}`}
@@ -32,7 +31,13 @@ export function ImagePopup(props) {
 				</figcaption>
 				<figcaption className="popup__figcaption popup__figcaption-likes">
 					{props.likedUsers
-						? props.likedUsers.map((like, i) => <div key={i}>{like.name}</div>)
+						? props.likedUsers.map((like, i) => <img
+							key={like._id}
+							src={like.avatar}
+							alt="likedAvatar"
+							style={{ height: '50px', borderRadius: "50%", width: '50px' }}
+						/>
+						)
 						: ""}
 				</figcaption>
 			</figure>
